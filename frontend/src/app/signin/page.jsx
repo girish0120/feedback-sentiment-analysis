@@ -2,19 +2,20 @@
 
 import styles from "./page.module.css";
 import { LexendDeca, montserrat } from "../fonts";
-import { getCsrfToken, useSession, signIn, signOut } from "next-auth/react";
+import { getCsrfToken, signIn } from "next-auth/react";
 import { useRef, useState } from "react";
 
 export default function SignIn({ csrfToken }) {
   const userName = useRef("");
   const password = useRef("");
+
   const [error, setError] = useState("");
   const onSubmit = async (e) => {
-    let user = userName.current;
-    let pass = password.current;
-
+    e.preventDefault();
     try {
-      e.preventDefault();
+      let user = userName.current;
+      let pass = password.current;
+
       const res = await signIn("credentials", {
         user,
         pass,
