@@ -6,10 +6,18 @@ export const options = {
       name: "Credentials",
       credentials: {},
       async authorize(credentials) {
-        const user = {
+        // Test data
+        user = {
           name: "2022",
           password: "1",
         };
+
+        const res = await fetch("", {
+          method: "POST",
+          body: JSON.stringify(credentials),
+          headers: { "Content-Type": "application/json" },
+        });
+        const user = await res.json();
 
         if (
           credentials.username === user.name &&
