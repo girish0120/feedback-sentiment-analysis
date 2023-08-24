@@ -1,8 +1,36 @@
+"use client";
+
 import styles from "./page.module.css";
 import { LexendDeca, montserrat } from "../fonts";
-import { getCsrfToken } from "next-auth/react";
+import { getCsrfToken, useSession, signIn, signOut } from "next-auth/react";
+import { useRef, useState } from "react";
 
 export default function SignIn({ csrfToken }) {
+  const userName = useRef("");
+  const password = useRef("");
+  const [error, setError] = useState("");
+  const onSubmit = async (e) => {
+    let user = userName.current;
+    let pass = password.current;
+
+    try {
+      e.preventDefault();
+      const res = await signIn("credentials", {
+        user,
+        pass,
+        redirect: false,
+        // callbackUrl: "/",
+      });
+
+      if (res.error) {
+        setError("Invalid Creds");
+        console.log(res.error);
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <div className={`${styles.container} ${LexendDeca.className}`}>
@@ -13,19 +41,23 @@ export default function SignIn({ csrfToken }) {
           <form method="post" action="/api/auth/callback/credentials">
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <div className={styles.form_heading}>Sign in</div>
-            {/* <div className={styles.form_desc}>
-            Intelligent Lecture Feedback System
-            </div> */}
+            {error && <div className={styles.form_desc}>{error}</div>}
             <div className={styles.form_input_wrapper}>
               <input
                 className={LexendDeca.className}
                 type="text"
                 placeholder="Username"
+                onChange={(e) => {
+                  userName.current = e.target.value;
+                }}
               />
               <input
                 className={LexendDeca.className}
                 type="text"
                 placeholder="Password"
+                onChange={(e) => {
+                  password.current = e.target.value;
+                }}
               />
             </div>
             <div className={styles.forgetpass_btn_wrapper}>
@@ -34,7 +66,7 @@ export default function SignIn({ csrfToken }) {
               </button>
             </div>
             <div className={styles.login_btn_wrapper}>
-              <button id="login" type="submit">
+              <button id="login" type="submit" onClick={onSubmit}>
                 Login
               </button>
             </div>

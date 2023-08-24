@@ -12,12 +12,14 @@ export const options = {
           password: "1",
         };
 
-        const res = await fetch("", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        });
-        const user = await res.json();
+        console.log(user.name);
+        console.log(credentials.username);
+        // const res = await fetch("", {
+        //   method: "POST",
+        //   body: JSON.stringify(credentials),
+        //   headers: { "Content-Type": "application/json" },
+        // });
+        // const user = await res.json();
 
         if (
           credentials.username === user.name &&
@@ -33,4 +35,8 @@ export const options = {
   pages: {
     signIn: "/signin",
   },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
